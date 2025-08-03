@@ -4,16 +4,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SettingOutlined, RedoOutlined} from '@ant-design/icons';
 import SettingsPanel from './SettingsPanel'; // 引入我们刚创建的设置面板组件
 
-// 【核心改造】getBotReply现在接收第二个参数：当前的分析数据
+// --- 核心API调用函数 (后端代理模式) ---
+// 这个函数现在调用我们自己的后端服务，由后端去请求DeepSeek API
 const getBotReply = async (chatHistory, currentAnalysisData) => {
-  const apiKey = process.env.REACT_APP_DEEPSEEK_API_KEY;
-  if (!apiKey || apiKey === 'your_deepseek_key_here') {
-    return { id: Date.now(), text: '错误：API Key未配置。', sender: 'bot' };
-  }
+  // 从环境变量获取我们自己的后端地址
+  const backendUrl = process.env.REACT_APP_API_URL;
 
   // 1. 动态构建系统提示 (System Prompt)
   let systemPrompt = "你是一个名为HeartTalk的专业心脏健康助手。请友好、简洁地回答用户问题。";
-  
   if (currentAnalysisData && currentAnalysisData.initialAnalysis) {
     const data = currentAnalysisData.initialAnalysis;
     const heartRate = data.Heart_Rate_Mean?.toFixed(2);
@@ -27,27 +25,28 @@ const getBotReply = async (chatHistory, currentAnalysisData) => {
     role: msg.sender === 'bot' ? 'assistant' : 'user',
     content: msg.text
   }));
+  
+  // 构造要发送给我们自己后端的请求体
+  const payload = {
+    messages: [
+      { role: "system", content: systemPrompt },
+      ...apiMessages
+    ]
+  };
 
   try {
-    const response = await fetch("https://api.deepseek.com/chat/completions", {
+    // 2. 请求的URL现在是我们自己的后端 /chat 端点
+    const response = await fetch(`${backendUrl}/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
       },
-      body: JSON.stringify({
-        model: "deepseek-chat",
-        // 2. 将系统提示和用户对话历史一起发送
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...apiMessages
-        ]
-      })
+      body: JSON.stringify(payload)
     });
     
     if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`API请求失败: ${errorData.error.message}`);
+        throw new Error(errorData.error || '服务器响应错误');
     }
 
     const data = await response.json();
@@ -56,10 +55,11 @@ const getBotReply = async (chatHistory, currentAnalysisData) => {
     return { id: Date.now(), text: botResponseText, sender: 'bot' };
 
   } catch (error) {
-    console.error("调用DeepSeek API时出错:", error);
+    console.error("调用后端聊天接口时出错:", error);
     return { id: Date.now(), text: `请求出错: ${error.message}`, sender: 'bot' };
   }
 };
+
 
 const INITIAL_MESSAGE = { id: 1, text: '您好，我是HeartTalk。请先上传您的心电图文件。', sender: 'bot' };
 // ChatPanel 组件现在接收 analysisData prop
