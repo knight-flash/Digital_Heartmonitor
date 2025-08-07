@@ -6,27 +6,42 @@ import SettingsPanel from './SettingsPanel'; // 引入我们刚创建的设置�
 
 // --- 核心API调用函数 (后端代理模式) ---
 // 这个函数现在调用我们自己的后端服务，由后端去请求DeepSeek API
-const getBotReply = async (chatHistory, currentAnalysisData) => {
-  // 从环境变量获取我们自己的后端地址
+// 在 ChatPanel.jsx 文件中
+
+export const getBotReply = async (chatHistory, currentAnalysisData) => {
   const backendUrl = process.env.REACT_APP_API_URL;
 
-  // 1. 动态构建系统提示 (System Prompt)
+  // --- 【核心改造】动态构建一个包含所有详细指标的系统提示 ---
   let systemPrompt = "你是一个名为HeartTalk的专业心脏健康助手。请友好、简洁地回答用户问题。";
-  if (currentAnalysisData && currentAnalysisData.initialAnalysis) {
-    const data = currentAnalysisData.initialAnalysis;
-    const heartRate = data.Heart_Rate_Mean?.toFixed(2);
-    const hrv = (data.HRV_RMSSD * 1000)?.toFixed(2);
-    // 将实时数据拼接成一段文字，注入到系统提示中
-    systemPrompt += ` 当前用户的实时ECG分析数据如下：平均心率是 ${heartRate} bpm, 心率变异性(RMSSD)是 ${hrv} ms。请利用这些信息来回答。`;
+  
+  // 检查是否有有效的【完整】分析数据
+  if (currentAnalysisData && currentAnalysisData.fullAnalysis) {
+    const fullData = currentAnalysisData.fullAnalysis;
+    
+    let dataSummary = "\n\n这是提供给你的、关于当前用户的ECG详细分析数据上下文：\n";
+    
+    // 动态地遍历所有从HeartVoice获取的数据，并将其格式化
+    for (const key in fullData) {
+      if (typeof fullData[key] === 'object' && fullData[key] !== null) {
+        dataSummary += `\n**${key}**:\n`;
+        for (const subKey in fullData[key]) {
+          const subValue = fullData[key][subKey];
+          // 将复杂的数值格式化，非数值直接显示
+          const formattedValue = typeof subValue === 'number' ? subValue.toFixed(2) : subValue;
+          dataSummary += `- ${subKey}: ${formattedValue}\n`;
+        }
+      }
+    }
+    
+    systemPrompt += dataSummary;
+    systemPrompt += "\n请严格基于以上提供的上下文数据和对话历史来回答用户接下来的问题。如果数据中没有相关信息，请明确告知用户。";
   }
 
-  // 将我们的消息格式转换为API要求的格式
   const apiMessages = chatHistory.map(msg => ({
     role: msg.sender === 'bot' ? 'assistant' : 'user',
     content: msg.text
   }));
   
-  // 构造要发送给我们自己后端的请求体
   const payload = {
     messages: [
       { role: "system", content: systemPrompt },
@@ -35,12 +50,9 @@ const getBotReply = async (chatHistory, currentAnalysisData) => {
   };
 
   try {
-    // 2. 请求的URL现在是我们自己的后端 /chat 端点
     const response = await fetch(`${backendUrl}/chat`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
     

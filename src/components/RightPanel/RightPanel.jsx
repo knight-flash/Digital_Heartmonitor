@@ -1,28 +1,35 @@
-// src/components/RightPanel/RightPanel.jsx
+// src/components/RightPanel/RightPanel.jsx (最终确认版)
 
 import React from 'react';
 import EcgChart from './EcgChart';
-import Gauge from '../common/Gauge';
+import Gauge from '../common/Gauge'; // 假设 Gauge 组件在同级目录
 
-// RightPanel 现在接收 analysisData 作为 prop
+// 这是一个简单的占位/加载组件
+const Placeholder = ({ message }) => (
+  <div style={{ color: '#567', textAlign: 'center', paddingTop: '100px', fontSize: '18px' }}>
+    {message}
+  </div>
+);
+
 function RightPanel({ analysisData }) {
-  // 如果还没有分析数据，可以显示一个加载状态或什么都不显示
+  // 【优化1】当没有数据时，显示明确的提示信息
   if (!analysisData) {
-    return <div className="right_main"></div>; // 或者一个 Loading... 组件
+    return (
+      <div className="right_main">
+        <Placeholder message="等待上传文件以显示图表..." />
+      </div>
+    );
   }
 
-  // 从 prop 中解构出我们需要的数据
   const { waveform, initialAnalysis } = analysisData;
 
-  // 使用后端传来的真实分析值，但范围等配置信息暂时保留
   const gaugeData = [
-    { title: '心率', unit: 'bpm', value: initialAnalysis.Heart_Rate_Mean, min: 40, max: 160, low: 60, high: 100 },
-    { title: 'HRV RMSSD', unit: 'ms', value: initialAnalysis.HRV_RMSSD * 1000, min: 0, max: 100, low: 10, high: 50 }, // RMSSD单位是秒，乘以1000变毫秒
-    // 其他指标暂时用占位符，因为我们的简化后端没有计算它们
-    { title: 'QRS 波群', unit: 'ms', value: 90, min: 60, max: 140, low: 70, high: 110 },
-    { title: 'QT 间期', unit: 'ms', value: 425, min: 300, max: 500, low: 340, high: 440 },
-    { title: 'P 电轴', unit: '°', value: 45, min: -30, max: 100, low: 0, high: 75 },
-    { title: 'T 电轴', unit: '°', value: 60, min: 0, max: 90, low: 15, high: 75 },
+    { title: '心率', unit: 'bpm', value: initialAnalysis.HR, min: 40, max: 160, low: 60, high: 100 },
+    { title: '压力值', unit: '', value: initialAnalysis.Pressure, min: 0, max: 100, low: 30, high: 70 },
+    { title: '心率变异性', unit: 'HRV', value: initialAnalysis.HRV, min: 0, max: 100, low: 20, high: 60 },
+    { title: '情绪值', unit: '', value: initialAnalysis.Emotion, min: 0, max: 100, low: 30, high: 70 },
+    { title: '疲劳值', unit: '', value: initialAnalysis.Fatigue, min: 0, max: 100, low: 30, high: 70 },
+    { title: '活力值', unit: '', value: initialAnalysis.Vitality, min: 0, max: 100, low: 30, high: 70 },
   ];
 
   return (
@@ -33,7 +40,6 @@ function RightPanel({ analysisData }) {
           实时心电波形图 (ECG)
         </div>
         <div style={{ width: '100%', height: '220px' }}>
-          {/* 将后端传来的真实波形数据传递给 EcgChart 组件 */}
           <EcgChart waveformData={waveform} />
         </div>
       </div>
@@ -61,4 +67,6 @@ function RightPanel({ analysisData }) {
   );
 }
 
-export default RightPanel;
+// 【优化2】使用 React.memo 包裹组件
+// 只要传入的 analysisData 没有发生变化，React就会跳过对这个组件的重新渲染
+export default React.memo(RightPanel);
