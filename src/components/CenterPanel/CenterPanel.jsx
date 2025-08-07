@@ -1,59 +1,61 @@
-// src/components/CenterPanel/CenterPanel.jsx (最终清理版)
-
 import React, { useState, useEffect, useRef } from 'react';
 import UploadPanel from './UploadPanel';
 import AnalysisReport from './AnalysisReport'; 
 
-// 在我们最终的、由后端生成报告的架构中，CenterPanel不再需要自己调用getBotReply
-// 因此相关的import也被移除了
-
 function CenterPanel({ appStatus, onUploadSuccess, setIsLoading, analysisData }) {
-  // --- 状态管理 ---
   const [activeVideo, setActiveVideo] = useState(1);
   const [showReport, setShowReport] = useState(false);
+  const [reportContent, setReportContent] = useState('');
   const video1Ref = useRef(null);
 
-  // --- 副作用 Hook ---
-  // 这个 useEffect 的职责很单一：只负责处理介绍视频的播放结束事件
+  // Effect 1: 监听视频结束事件，决定何时【显示】报告
   useEffect(() => {
     if (appStatus === 'displaying_results') {
       const videoElement = video1Ref.current;
       if (!videoElement) return;
-
       const handleVideoEnd = () => {
-        setActiveVideo(2); // 切换到循环视频
-        setShowReport(true); // 触发报告区域的显示
+        setActiveVideo(2);
+        setShowReport(true);
       };
-
       videoElement.addEventListener('ended', handleVideoEnd);
-      
-      // 清理函数
-      return () => {
-        if (videoElement) {
-          videoElement.removeEventListener('ended', handleVideoEnd);
-        }
-      };
+      return () => { if (videoElement) videoElement.removeEventListener('ended', handleVideoEnd); };
     }
   }, [appStatus]);
 
-  
-  // --- 渲染逻辑 ---
+  // Effect 2: 【核心修改】数据加载后，立刻在后台【请求生成】报告
+  useEffect(() => {
+    if (appStatus === 'displaying_results' && analysisData) {
+      const fetchReport = async () => {
+        setReportContent("AI报告正在生成中...");
+        try {
+          const backendUrl = process.env.REACT_APP_API_URL;
+          const response = await fetch(`${backendUrl}/generate-report`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fullAnalysis: analysisData.fullAnalysis })
+          });
+          if (!response.ok) throw new Error('报告服务器响应错误');
+          const reportData = await response.json();
+          setReportContent(reportData.textReport);
+        } catch (error) {
+          setReportContent(`报告生成失败: ${error.message}`);
+        }
+      };
+      fetchReport();
+    }
+  }, [appStatus, analysisData]);
 
-  // 1. 根据应用状态，决定显示上传界面还是仪表盘
   if (appStatus !== 'displaying_results') {
     return (
       <div className="center_main">
         <div className="center_top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <UploadPanel onUploadSuccess={onUploadSuccess} setIsLoading={setIsLoading} />
         </div>
-        <div className="center_bottom">
-          {/* 初始状态下，报告区为空 */}
-        </div>
+        <div className="center_bottom" />
       </div>
     );
   }
 
-  // 2. 显示仪表盘
   return (
     <div className="center_main">
       <div className="center_top" style={{ width: '684px', height: '430px', position: 'relative', backgroundColor: '#0b1c2c', overflow: 'hidden' }}>
@@ -69,10 +71,8 @@ function CenterPanel({ appStatus, onUploadSuccess, setIsLoading, analysisData })
         </div>
       </div>
       <div className="center_bottom">
-        {/* 当需要显示报告时 (showReport为true), 
-          直接从 analysisData prop 中读取后端已经生成好的 textReport 
-        */}
-        {showReport && analysisData && <AnalysisReport content={analysisData.textReport} />}
+        {/* 【修正】...并在这里被正确使用，传递给 AnalysisReport 组件 */}
+        {showReport && <AnalysisReport content={reportContent} />}
       </div>
     </div>
   );
