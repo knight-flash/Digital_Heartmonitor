@@ -1,19 +1,24 @@
-// src/components/RightPanel/RightPanel.jsx (最终确认版)
+// src/components/RightPanel/RightPanel.jsx (修改后)
 
 import React from 'react';
 import EcgChart from './EcgChart';
-import Gauge from '../common/Gauge'; // 假设 Gauge 组件在同级目录
+import Gauge from '../common/Gauge';
+import { useSession } from '../../context/SessionContext'; // 1. 导入useSession
 
-// 这是一个简单的占位/加载组件
 const Placeholder = ({ message }) => (
   <div style={{ color: '#567', textAlign: 'center', paddingTop: '100px', fontSize: '18px' }}>
     {message}
   </div>
 );
 
-function RightPanel({ analysisData }) {
-  // 【优化1】当没有数据时，显示明确的提示信息
-  if (!analysisData) {
+// 2. 不再需要 analysisData prop
+function RightPanel() {
+  // 3. 直接从全局Context获取状态
+  const { state } = useSession();
+  const { initialAnalysis, waveform } = state;
+
+  // 4. 当没有初始分析数据时，显示提示信息
+  if (!initialAnalysis) {
     return (
       <div className="right_main">
         <Placeholder message="等待上传文件以显示图表..." />
@@ -21,8 +26,7 @@ function RightPanel({ analysisData }) {
     );
   }
 
-  const { waveform, initialAnalysis } = analysisData;
-
+  // 注意：下面的所有逻辑都保持不变，因为它们现在能正确获取到数据了
   const gaugeData = [
     { title: '心率', unit: 'bpm', value: initialAnalysis.HR, min: 40, max: 160, low: 60, high: 100 },
     { title: '压力值', unit: '', value: initialAnalysis.Pressure, min: 0, max: 100, low: 30, high: 70 },
@@ -36,7 +40,7 @@ function RightPanel({ analysisData }) {
     <div className="right_main">
       <div className="right_box">
         <div className="right_title">
-          <img src="./static/title.png" alt="" />
+          <img src="/title.png" alt="" />
           实时心电波形图 (ECG)
         </div>
         <div style={{ width: '100%', height: '220px' }}>
@@ -45,7 +49,7 @@ function RightPanel({ analysisData }) {
       </div>
       <div className="right_box">
         <div className="right_title">
-          <img src="./static/title.png" alt="" />
+          <img src="/title.png" alt="" />
           核心心电指标
         </div>
         <div className="gauge-grid-container">
@@ -67,6 +71,4 @@ function RightPanel({ analysisData }) {
   );
 }
 
-// 【优化2】使用 React.memo 包裹组件
-// 只要传入的 analysisData 没有发生变化，React就会跳过对这个组件的重新渲染
 export default React.memo(RightPanel);

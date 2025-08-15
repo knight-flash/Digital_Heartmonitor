@@ -1,93 +1,72 @@
-import React, { useState, useEffect, useRef } from 'react';
-import UploadPanel from './UploadPanel';
-import AnalysisReport from './AnalysisReport'; 
-function CenterPanel({ appStatus, onUploadSuccess, setIsLoading, analysisData }) {
-  const [activeVideo, setActiveVideo] = useState(1);
-  const [showReport, setShowReport] = useState(false);
-  const [reportContent, setReportContent] = useState('');
-  const video1Ref = useRef(null);
-  const reportGenerationTriggered = useRef(false);
+// src/components/CenterPanel/CenterPanel.jsx (修正视频播放版)
 
+import React, { useState, useEffect, useRef } from 'react'; // 1. 重新引入需要的hooks
+import UploadPanel from './UploadPanel';
+import AnalysisReport from './AnalysisReport';
+import { useSession } from '../../context/SessionContext';
+
+function CenterPanel() {
+  const { state } = useSession();
+  const { sessionStatus } = state;
+
+  // 2. 恢复用于控制视频播放的本地状态和ref
+  const [activeVideo, setActiveVideo] = useState(1);
+  const video1Ref = useRef(null);
+
+  // 3. 恢复只与视频播放相关的useEffect
   useEffect(() => {
-    if (appStatus === 'displaying_results' && analysisData) {
+    // 仅当进入结果显示状态时，才处理视频逻辑
+    if (sessionStatus === 'generating_report' || sessionStatus === 'ready') {
       const videoElement = video1Ref.current;
       if (!videoElement) return;
 
-      const fetchReport = async () => {
-        // 这个函数现在只负责设置加载文本和调用API
-        setReportContent("AI报告正在生成中...");
-        try {
-          const backendUrl = process.env.REACT_APP_API_URL;
-          const response = await fetch(`${backendUrl}/generate-report`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ fullAnalysis: analysisData.fullAnalysis })
-          });
-          if (!response.ok) throw new Error('报告服务器响应错误');
-          const reportData = await response.json();
-          setReportContent(reportData.textReport);
-        } catch (error) {
-          setReportContent(`报告生成失败: ${error.message}`);
-        }
-      };
-
-      // 【核心修改】当视频首次播放时触发
-      const handlePlay = () => {
-        if (!reportGenerationTriggered.current) {
-          reportGenerationTriggered.current = true;
-          
-          // 1. 立刻显示报告区域
-          setShowReport(true); 
-          // 2. 立刻开始获取报告（这会设置“正在生成中...”的文本）
-          fetchReport();
-        }
-      };
-      
-      // 【核心修改】当视频播放结束时，现在只负责切换视频
+      // 当第一个视频播放结束时，切换到第二个循环播放的视频
       const handleVideoEnd = () => {
         setActiveVideo(2);
       };
 
-      videoElement.addEventListener('play', handlePlay);
       videoElement.addEventListener('ended', handleVideoEnd);
-      
+
+      // 清理事件监听器
       return () => {
         if (videoElement) {
-          videoElement.removeEventListener('play', handlePlay);
           videoElement.removeEventListener('ended', handleVideoEnd);
         }
       };
     }
-  }, [appStatus, analysisData]);
+  }, [sessionStatus]); // 依赖于sessionStatus来触发
 
-  if (appStatus !== 'displaying_results') {
+
+  if (sessionStatus === 'idle') {
     return (
       <div className="center_main">
         <div className="center_top" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <UploadPanel onUploadSuccess={onUploadSuccess} setIsLoading={setIsLoading} />
+          <UploadPanel />
         </div>
         <div className="center_bottom" />
       </div>
     );
   }
 
+  // 4. 恢复原始的、包含两个video标签的JSX结构
   return (
     <div className="center_main">
       <div className="center_top" style={{ width: '688px', height: '387px', position: 'relative', backgroundColor: '#0b1c2c', overflow: 'hidden' }}>
         <div id="video-container-1" style={{ width: '100%', height: '100%', display: activeVideo === 1 ? 'block' : 'none' }}>
+          {/* 使用原始的视频文件路径 */}
           <video ref={video1Ref} id="heart-video-1" width="100%" height="100%" muted autoPlay style={{ objectFit: 'cover' }}>
             <source src="./static/media/heart_video.mp4" type="video/mp4" />
           </video>
         </div>
         <div id="video-container-2" style={{ width: '100%', height: '100%', display: activeVideo === 2 ? 'block' : 'none', position: 'absolute', top: 0, left: 0 }}>
+          {/* 使用原始的循环视频文件路径 */}
           <video id="heart-video-2" width="100%" height="100%" muted loop autoPlay style={{ objectFit: 'cover' }}>
             <source src="./static/media/heart_video_loop.mp4" type="video/mp4" />
           </video>
         </div>
       </div>
       <div className="center_bottom">
-        {/* 【修正】...并在这里被正确使用，传递给 AnalysisReport 组件 */}
-        {showReport && <AnalysisReport content={reportContent} />}
+        <AnalysisReport />
       </div>
     </div>
   );

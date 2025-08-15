@@ -1,16 +1,22 @@
-// src/components/CenterPanel/UploadPanel.jsx
+// src/components/CenterPanel/UploadPanel.jsx (修改后)
 
 import React, { useState } from 'react';
+import { useSession } from '../../context/SessionContext'; // 1. 导入useSession
+import { analyzeFile } from '../../services/apiService'; // 2. 导入新的API函数
 
-// 这个组件接收两个 props:
-// 1. onUploadSuccess: 一个回调函数，当文件成功上传并获得分析结果后调用。
-// 2. setIsLoading: 一个函数，用于通知父组件进入“加载中”状态。
-function UploadPanel({ onUploadSuccess, setIsLoading }) {
+// 3. 不再需要任何props
+function UploadPanel() {
+  const { dispatch } = useSession(); // 4. 获取dispatch函数
   const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState('请上传心电图信号文件 (.mat)');
+  const [isUploading, setIsUploading] = useState(false); // 使用本地loading状态
 
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setMessage(`已选择文件: ${file.name}`);
+    }
   };
 
   const handleUpload = async () => {
@@ -19,42 +25,41 @@ function UploadPanel({ onUploadSuccess, setIsLoading }) {
       return;
     }
 
-    setIsLoading(true); // 通知父组件，开始加载
+    setIsUploading(true);
     setMessage('正在上传并分析文件，请稍候...');
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-
     try {
-      // 向我们本地运行的Python后端发送请求
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/analyze`, {
-          method: 'POST',
-          body: formData,
-        });
+      // 5. 调用新的、统一的API服务函数
+      const response = await analyzeFile(selectedFile);
 
-      if (!response.ok) {
-        throw new Error('服务器响应错误');
-      }
-
-      const data = await response.json();
-      
-      // 调用父组件传入的回调函数，并将获取到的数据传递出去
-      onUploadSuccess(data);
+      // 6. 【核心】文件上传成功后，派发一个全局的 'START_SESSION' 动作
+      dispatch({
+        type: 'START_SESSION',
+        payload: {
+          sessionId: response.data.session_id,
+          initialAnalysis: response.data.initialAnalysis,
+          waveform: response.data.waveform
+        }
+      });
+      // 注意：成功后我们不再需要做任何事，因为后续流程已由App.js中的轮询接管
 
     } catch (error) {
       console.error('上传或分析失败:', error);
-      setMessage(`处理失败: ${error.message}，请重试。`);
-      setIsLoading(false); // 加载失败，取消加载状态
+      const errorMessage = error.response?.data?.error || error.message || '未知错误';
+      setMessage(`处理失败: ${errorMessage}，请重试。`);
+      dispatch({ type: 'SET_ERROR', payload: errorMessage }); // 也可以派发一个全局错误
+      setIsUploading(false);
     }
+    // 注意：这里的isUploading状态不会再重置为false，因为成功后整个视图会切换
   };
 
   return (
     <div style={{ color: 'white', textAlign: 'center', padding: '50px' }}>
       <h2>{message}</h2>
       <div style={{ marginTop: '20px' }}>
-        <input type="file" accept=".mat" onChange={handleFileChange} />
-        <button onClick={handleUpload} style={{ color:'black',marginLeft: '10px', padding: '8px 16px' }}>
-          开始分析
+        <input type="file" accept=".mat" onChange={handleFileChange} disabled={isUploading} />
+        <button onClick={handleUpload} disabled={isUploading} style={{ color:'black',marginLeft: '10px', padding: '8px 16px' }}>
+          {isUploading ? '处理中...' : '开始分析'}
         </button>
       </div>
     </div>
