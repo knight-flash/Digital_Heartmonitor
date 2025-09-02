@@ -35,7 +35,13 @@ function sessionReducer(state, action) {
         ...state,
         sessionStatus: 'ready',
         report: action.payload.report,
-        chatHistory: [...state.chatHistory, { id: Date.now(), text: '您的专属AI报告已生成完毕！您可以开始向我提问了。', sender: 'bot' }]
+        chatHistory: [...state.chatHistory, { id: Date.now(), text: `您的专属AI报告已生成完毕！您可以开始向我提问了。
+
+      不知道从何问起？可以试试这样问：
+
+      - 我有房颤吗？
+      - 帮我提取详细的生理特征指标
+      - 对我的心搏进行分类`, sender: 'bot' }],
       };
     case 'AGENT_START':
       // AI开始回复

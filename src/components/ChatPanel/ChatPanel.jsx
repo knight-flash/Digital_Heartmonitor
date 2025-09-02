@@ -5,7 +5,7 @@ import { SettingOutlined, RedoOutlined } from '@ant-design/icons';
 import SettingsPanel from './SettingsPanel';
 import { useSession } from '../../context/SessionContext'; // 1. 导入 useSession
 import { postToAgent } from '../../services/apiService'; // 2. 导入新的 agent API
-
+import ReactMarkdown from 'react-markdown'; // <--- 【新增】导入这个组件
 function ChatPanel() {
   // 3. 从全局Context获取所有需要的数据和方法
   const { state, dispatch } = useSession();
@@ -95,7 +95,9 @@ function ChatPanel() {
               <div className="message-content" style={{ display: 'flex', flexDirection: 'column', alignItems: message.sender === 'user' ? 'flex-end' : 'flex-start' }}>
                 <span className="sender-name" style={{ color: '#eee', fontSize: '14px', marginBottom: '5px' }}>{message.sender === 'bot' ? 'HeartTalk' : 'You'}</span>
                 <div className="message-bubble" style={{ backgroundColor: message.sender === 'user' ? '#0B4EC3' : 'rgba(30, 60, 130, 0.5)', color: '#fff', padding: '10px 15px', borderRadius: '8px', borderTopLeftRadius: message.sender === 'bot' ? 0 : '8px', borderTopRightRadius: message.sender === 'user' ? 0 : '8px', maxWidth: '100%' }}>
-                  {message.text}
+                            <ReactMarkdown>
+                              {message.text}
+                            </ReactMarkdown>
                 </div>
               </div>
             </div>
