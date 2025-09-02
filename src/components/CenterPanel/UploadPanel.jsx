@@ -65,17 +65,17 @@ function UploadPanel() {
     }
   };
 
-  const buttonStyle = { padding: '8px 16px', borderRadius: '4px', border: 'none', cursor: 'pointer' };
+  const buttonStyle = { padding: '0.1rem 0.2rem', borderRadius: '0.05rem', border: 'none', cursor: 'pointer', fontSize: '0.26rem', flex: '0 0 auto' };
   const disabledStyle = isUploading ? { opacity: 0.6, pointerEvents: 'none' } : {};
 
   return (
-    <div style={{ color: 'white', textAlign: 'center', padding: '50px' }}>
-      <h2>{message}</h2>
+    <div style={{ color: 'white', textAlign: 'center', padding: '0.625rem' }}>
+      <h2 style={{ fontSize: '0.26rem', whiteSpace: 'nowrap' }}>{message}</h2>
 
       {/* 示例文件快捷选择 */}
-      <div style={{ marginTop: '10px' }}>
-        <span style={{ fontSize: '14px', color: '#cfe6ff' }}>没有.mat文件？试试示例：</span>
-        <div style={{ marginTop: '10px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+      <div style={{ marginTop: '0.125rem' }}>
+        <span style={{ fontSize: '0.18rem', color: '#cfe6ff', whiteSpace: 'nowrap' }}>没有.mat文件？试试示例：</span>
+        <div style={{ marginTop: '0.125rem', display: 'flex', gap: '0.125rem', justifyContent: 'center', flexWrap: 'nowrap', overflowX: 'auto' }}>
           {/* 注意：请将示例文件放到 public/static/samples/ 目录下 */}
           <button style={{ ...buttonStyle, backgroundColor: '#0B4EC3', color: '#fff', ...disabledStyle }} onClick={() => handleUseSample('/static/samples/A00001.mat', 'A00001.mat')}>示例1</button>
           <button style={{ ...buttonStyle, backgroundColor: '#0B4EC3', color: '#fff', ...disabledStyle }} onClick={() => handleUseSample('/static/samples/A00002.mat', 'A00002.mat')}>示例2</button>
@@ -83,10 +83,10 @@ function UploadPanel() {
         </div>
       </div>
 
-      <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ marginTop: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'nowrap', gap: '0.125rem', overflowX: 'auto' }}>
         <input id="file-upload" type="file" accept=".mat" onChange={handleFileChange} disabled={isUploading} style={{ display: 'none' }} />
-        <label htmlFor="file-upload" style={{ ...buttonStyle, backgroundColor: '#ffffff', color: '#000', marginRight: '10px', ...disabledStyle }}>选择文件</label>
-        <button onClick={handleUpload} disabled={isUploading} style={{ ...buttonStyle, backgroundColor: '#ffffff', color: 'black', ...disabledStyle }}>
+        <label htmlFor="file-upload" style={{ ...buttonStyle, backgroundColor: '#ffffff', color: '#000', marginRight: '0', whiteSpace: 'nowrap', ...disabledStyle }}>选择文件</label>
+        <button onClick={handleUpload} disabled={isUploading} style={{ ...buttonStyle, backgroundColor: '#ffffff', color: 'black', whiteSpace: 'nowrap', ...disabledStyle }}>
           {isUploading ? '处理中...' : '开始分析'}
         </button>
       </div>

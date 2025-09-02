@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import UploadPanel from './UploadPanel';
-import AnalysisReport from './AnalysisReport';
 import EcgChart from '../RightPanel/EcgChart';
 import RadarChart from '../common/RadarChart';
 import SingleCircularGauge from '../common/SingleCircularGauge';
@@ -41,7 +40,7 @@ function CenterPanel() {
       <div className="center_main" style={{paddingLeft:'350px',paddingTop:'180px'}}>
         <div className="center_top" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ color: '#ffffff', fontSize: '20px', fontWeight: 600, marginBottom: '16px' }}>
-            <h2>欢迎来到数字心脏监测系统</h2>
+            <h2 style={{whiteSpace: 'nowrap'}}>欢迎来到数字心脏监测系统</h2>
           </div>
           <UploadPanel />
         </div>
@@ -152,8 +151,8 @@ function CenterPanel() {
           marginRight: 'auto',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center', // 改为center，让子元素可以自由定位
-          gap: '20px' // 添加间距
+          justifyContent: 'space-between',
+          gap: '0px'
         }}>
           {/* 左侧：心率圆环进度条 */}
           <div style={{ 
@@ -180,13 +179,12 @@ function CenterPanel() {
 
           {/* 右侧：其他指标雷达图 */}
           <div style={{ 
-            width: '50%', // 从45%增加到50%，增加容器宽度
+            width: '60%', // 放大到60%，让右侧占满
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginLeft: '-40px' // 从-20px增加到-40px，再往左边移动
+            alignItems: 'stretch',
+            justifyContent: 'center'
           }}>
             <div style={{ 
               color: '#fff', 

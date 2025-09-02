@@ -40,8 +40,8 @@ function Header() {
         {formatDateTime(currentTime)}
       </span>
       <span className="desc">
-        北京大学健康医疗大数据国家研究院：
-        <a href="http://dshm.bjmu.edu.cn">Website</a>
+        血管稳态与重构全国重点实验室<br />
+        北京大学健康医疗大数据国家研究院
       </span>
     </div>
   );

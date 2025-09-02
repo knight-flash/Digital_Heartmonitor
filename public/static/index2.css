@@ -60,7 +60,7 @@ li {
     top: 0.35rem;
     right: 0.4rem;
     font-size: 0.26rem;
-    background-image: -webkit-linear-gradient(bottom, #3aa4ff, #e6e5e5);
+    background-image: -webkit-linear-gradient(bottom, #3aa4ff, #3aa4ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     display: table;

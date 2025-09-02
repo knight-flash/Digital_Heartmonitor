@@ -28,3 +28,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+/* Header 描述文字：增大两行间距，并整体上移一点 */
+.header .desc {
+  display: inline-block;
+  line-height: 1.6;
+  margin-top: -14.5px;
+}

@@ -22,10 +22,6 @@ function RadarChart({ data }) {
       return '#58D68D'; // 绿色 - 正常值
     };
 
-    const colors = data.map(item => 
-      getColorByValue(item.value, item.min, item.max, item.low, item.high)
-    );
-
     return {
       grid: {
         left: '10%',
