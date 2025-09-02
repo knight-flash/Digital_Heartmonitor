@@ -41,10 +41,9 @@ function RadarChart({ data }) {
           fontWeight: 'bold',
           padding: [3, 5],
           overflow: 'break',
-          formatter: function(value, indicator) {
+          formatter: function(value) {
             const index = indicators.findIndex(item => item.name === value);
             const item = data[index];
-            const color = getColorByValue(item.value, item.min, item.max, item.low, item.high);
             // 根据是否有单位来决定显示格式
             const scoreText = item.unit ? `${item.value} (${item.unit})` : `${item.value}`;
             return [
