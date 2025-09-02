@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // 1. 创建一个axios实例，集中配置后端API的基础URL
 const apiClient = axios.create({
-  //baseURL: 'http://43.140.221.39', // 从环境变量读取后端地址
+  baseURL: 'https://digitalheart.heartvoice.com.cn', // 从环境变量读取后端地址
   //  baseURL: 'http://localhost:5001', // 从环境变量读取后端地址
   timeout: 60000, // 设置请求超时时间（例如60秒）
 });
