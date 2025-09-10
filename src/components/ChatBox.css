@@ -1,0 +1,282 @@
+/* 聊天框样式 */
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* 使用父容器的高度 */
+  background-color: #fff;
+}
+
+.chat-header {
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f8f9fa;
+}
+
+.chat-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #fafafa;
+  min-height: 200px; /* 设置最小高度 */
+  max-height: calc(75vh - 15px); /* 增加聊天框高度：75vh - 15px(标题区域) */
+}
+
+.message {
+  margin-bottom: 15px;
+  display: flex;
+}
+
+.message.user {
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.message.bot {
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.message.system {
+  justify-content: center;
+}
+
+.message-content {
+  max-width: 80%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.message.user .message-content {
+  background-color: #007bff;
+  color: white;
+  border-bottom-right-radius: 4px;
+  max-width: 50%;
+}
+
+.bot-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  margin-left: 4px;
+}
+
+.bot-avatar {
+  width: 24px;
+  height: 24px;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 1px solid #e9ecef;
+}
+
+.bot-name {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  margin-right: -10px;
+}
+
+.user-avatar {
+  width: 24px;
+  height: 24px;
+  background-color: #007bff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: white;
+}
+
+.user-name {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.message.bot .message-content {
+  background-color: #e9ecef;
+  color: #333;
+  border-bottom-left-radius: 4px;
+  max-width: 50%;
+}
+
+.message.system .message-content {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+  font-style: italic;
+}
+
+.chat-input {
+  padding: 20px; /* 与右边卡片padding对齐 */
+  border-top: 1px solid #e0e0e0;
+  background-color: #fff;
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0; /* 防止输入框被压缩 */
+  min-height: 80px; /* 调整最小高度 */
+  margin-top: auto; /* 确保输入框在底部 */
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.chat-input input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.chat-input button {
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+  background-color: #0056b3;
+}
+
+.chat-input button:active {
+  transform: translateY(1px);
+}
+
+/* 滚动条样式 */
+.chat-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.chat-messages::-webkit-scrollbar-thumb:active {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Firefox 滚动条样式 */
+.chat-messages {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
+}
+
+/* 建议按钮样式 */
+.message-suggestions {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.suggestion-button {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #374151;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 100%;
+  word-wrap: break-word;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 400;
+}
+
+.suggestion-button:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.suggestion-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 机器人消息的建议按钮样式 */
+.message.bot .suggestion-button {
+  background-color: #ffffff;
+  border-color: #e5e7eb;
+  color: #374151;
+}
+
+.message.bot .suggestion-button:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+/* 工具条：去掉按钮边框与背景 */
+.message-toolbar {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #64748b;
+}
+
+.message-toolbar .tb-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 6px;
+  color: inherit;
+  cursor: pointer;
+}
+
+.message-toolbar .tb-btn:focus {
+  outline: none;
+  box-shadow: none;
+}

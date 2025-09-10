@@ -1,0 +1,99 @@
+/* 上传页面 */
+.upload-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dropzone {
+  position: relative;
+  border: 2px dashed #cbd5e1;
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 28px;
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease;
+}
+
+.dropzone.dragging {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.dropzone-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  pointer-events: none; /* 防止内层元素拦截点击，统一由 input 捕获 */
+}
+
+.drop-icon { font-size: 28px; }
+.drop-title { font-weight: 600; }
+.drop-subtitle { font-size: 12px; color: #64748b; }
+
+.file-actions { display: flex; align-items: center; }
+
+button.primary {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button.primary:disabled { opacity: .5; cursor: not-allowed; }
+
+/* 示例按钮样式 */
+.sample-btn {
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background: #e2e8f0;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  font-size: 12px;
+}
+.sample-btn:hover { background: #cbd5e1; }
+.sample-btn:active { background: #94a3b8; color: white; border-color: #94a3b8; }
+
+.file-list { display: flex; flex-direction: column; gap: 12px; }
+.file-item { border: 1px solid #e2e8f0; border-radius: 8px; background: white; }
+.file-meta { display: flex; align-items: center; gap: 12px; padding: 12px; }
+.file-icon { font-size: 20px; }
+.file-info { flex: 1; min-width: 0; }
+.file-name { font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.file-sub { font-size: 12px; color: #64748b; }
+.file-ops { display: flex; gap: 8px; }
+button.link { background: none; border: none; color: #2563eb; cursor: pointer; padding: 6px 8px; }
+button.link.danger { color: #ef4444; }
+button[disabled] { opacity: .6; cursor: not-allowed; }
+
+/* 移除进度条样式 */
+
+.file-item.error { border-color: #fecaca; }
+.file-error { color: #b91c1c; font-size: 12px; padding: 8px 12px; }
+.file-success { color: #16a34a; font-size: 12px; padding: 8px 12px; }
+.file-uploading { color: #475569; font-size: 12px; padding: 0 12px 12px; display: flex; align-items: center; gap: 8px; }
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #cbd5e1;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
