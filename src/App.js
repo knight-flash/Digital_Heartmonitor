@@ -1,15 +1,26 @@
 import React, {useEffect} from 'react';
 import MainLayout from './components/MainLayout';
+import SharePage from './components/SharePage';
 import './App.css';
 import { useSession } from "./utils/SessionContext";
 import {getSessionStatus} from "./services/apiService";
+import { getShareIdFromUrl } from "./utils/shareUtils";
 
 function App() {
     const { state, dispatch } = useSession();
     const { sessionId, sessionStatus } = state;
+    
+    // 检查是否为分享链接：支持 /share 和 /share?s=...
+    const pathParts = window.location.pathname.split('/');
+    const isSharePage = pathParts[1] === 'share';
 
     // 4. 【核心】实现轮询逻辑的useEffect
     useEffect(() => {
+        // 如果是分享页面，不执行轮询逻辑
+        if (isSharePage) {
+            return;
+        }
+        
         // 如果状态不是'generating_report'，则什么也不做
         if (sessionStatus !== 'generating_report' || !sessionId) {
             return;
@@ -47,10 +58,11 @@ function App() {
         return () => {
             clearInterval(intervalId);
         };
-    }, [sessionId, sessionStatus, dispatch]);
+    }, [sessionId, sessionStatus, dispatch, isSharePage]);
+    
   return (
       <div className="App">
-          <MainLayout />
+          {isSharePage ? <SharePage /> : <MainLayout />}
       </div>
   );
 }

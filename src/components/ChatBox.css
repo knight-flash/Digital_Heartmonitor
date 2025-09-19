@@ -274,6 +274,35 @@
   padding: 0 6px;
   color: inherit;
   cursor: pointer;
+  position: relative;
+}
+.message-toolbar .tb-btn:active {
+  transform: scale(0.9);
+}
+
+/* 点赞/点踩特效：点击时出现小粒子动画 */
+.message-toolbar .tb-btn::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+}
+
+.message-toolbar .tb-btn:focus::after,
+.message-toolbar .tb-btn:active::after {
+  animation: burst 500ms ease-out;
+}
+
+@keyframes burst {
+  0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.2); }
+  50% { opacity: 0.4; transform: translate(-50%, -50%) scale(1.4); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.8); }
 }
 
 .message-toolbar .tb-btn:focus {

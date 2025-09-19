@@ -55,6 +55,19 @@ function sessionReducer(state, action) {
       return { ...state, error: action.payload.error, isAgentLoading: false };
     case 'RESET_SESSION':
       return initialState;
+    case 'RESTORE_SHARED_SESSION':
+      // 还原分享的会话数据
+      return {
+        ...state,
+        sessionStatus: action.payload.sessionStatus,
+        sessionId: action.payload.sessionId,
+        initialAnalysis: action.payload.initialAnalysis,
+        waveform: action.payload.waveform,
+        report: action.payload.report,
+        chatHistory: action.payload.chatHistory,
+        isAgentLoading: false,
+        error: null,
+      };
     default:
       return state;
   }

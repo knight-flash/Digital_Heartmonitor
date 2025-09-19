@@ -119,7 +119,7 @@ const PageOne = ({ analysisResult }) => {
                             实时心电波形图 (ECG)
                         </div>
                         <div style={{ width: '100%', height: 'calc(100% - 40px)' }}>
-                            <EcgChart waveformData={waveform} />
+                            <EcgChart waveformData={(waveform && (waveform.data || waveform)) || []} />
                         </div>
                     </div>
                 </div>
