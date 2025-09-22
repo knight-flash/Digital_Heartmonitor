@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './ChatHistorySelector.css';
-import { serializeSessionData, generateShareLink, generateEncShareLink } from '../utils/shareUtils';
+import { generateEncShareLink } from '../utils/shareUtils';
 
 const ChatHistorySelector = ({ chatHistory, sessionData, onClose, onShare, onShowToast }) => {
   const [selectedConversations, setSelectedConversations] = useState(new Set());
