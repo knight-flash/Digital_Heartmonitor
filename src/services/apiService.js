@@ -5,13 +5,13 @@ import axios from 'axios';
 // 1. 创建一个axios实例，集中配置后端API的基础URL
 const apiClient = axios.create({
   baseURL: 'http://82.156.205.186', // 从环境变量读取后端地址
-   // baseURL: 'http://localhost:5001', // 从环境变量读取后端地址
-  timeout: 60000, // 设置请求超时时间（例如60秒）
+  //  baseURL: 'http://localhost:5001', // 从环境变量读取后端地址
+  timeout: 600000, // 设置请求超时时间（例如60秒）
 });
 
 const apiClientPlus = axios.create({
-  // baseURL: 'http://localhost:8081', // 从环境变量读取后端地址
-  baseURL: 'http://183.162.233.24:8005', // 从环境变量读取后端地址
+  // baseURL: 'http://localhost:8086', // 从环境变量读取后端地址
+  baseURL: 'http://82.156.205.186:8080', // 从环境变量读取后端地址
   // timeout: 60000, // 设置请求超时时间（例如60秒）
 });
 
@@ -60,18 +60,19 @@ export const postToAgent = (sessionId, prompt) => {
  * @param {string} answer - 机器人回答
  * @returns {Promise<Object>} - 后端保存结果
  */
-export const saveConversation = (sessionId, question, answer, messageId, rightPanelData = {}) => {
+export const saveConversation = (sessionId, question,suggestions, answer, messageId, rightPanelData = {}) => {
   const payload = {
     sessionId,
     question,
     answer,
     messageId,
+    suggestions:suggestions,
     // 右侧面板相关数据（可选）
     initialAnalysis: rightPanelData.initialAnalysis ?? undefined,
     waveform: rightPanelData.waveform ?? undefined,
     report: rightPanelData.report ?? undefined,
+    ecgEhco: rightPanelData.gifBinary ?? undefined,
   };
-  console.log(payload)
   // 请根据后端实际路径调整此接口地址
   return apiClientPlus.post('/api/digitalHeart/saveMessage', payload);
 };

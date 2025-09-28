@@ -3,15 +3,11 @@ import EcgChart from "../utils/EcgChart";
 import SingleCircularGauge from "../utils/SingleCircularGauge";
 import RadarChart from "../utils/RadarChart";
 import {useSession} from "../utils/SessionContext";
-import heartVideo from "../media/heart_video.mp4";
-import heartVideoLoop from "../media/heart_video_loop.mp4";
 
-const PageOne = ({ analysisResult }) => {
-
+const PageOne = () => {
 
     const { state } = useSession();
-    const { sessionStatus, waveform, initialAnalysis } = state;
-
+    const { sessionStatus, waveform, initialAnalysis,gifBinary } = state;
     const [activeVideo, setActiveVideo] = useState(1);
     const video1Ref = useRef(null);
 
@@ -90,15 +86,22 @@ const PageOne = ({ analysisResult }) => {
                         backgroundColor: '#1a2f3d'
                     }}>
                         <div id="video-container-1" style={{ width: '100%', height: '100%', display: activeVideo === 1 ? 'block' : 'none' }}>
-                            <video ref={video1Ref} id="heart-video-1" width="100%" height="100%" muted autoPlay playsInline style={{ objectFit: 'cover' }}>
-                                <source src={heartVideo} type="video/mp4" />
-                            </video>
+                            <img
+                                src={`data:image/gif;base64,${gifBinary}`}
+                                alt="ECG 动图"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
                         </div>
-                        <div id="video-container-2" style={{ width: '100%', height: '100%', display: activeVideo === 2 ? 'block' : 'none', position: 'absolute', top: 0, left: 0 }}>
-                            <video id="heart-video-2" width="100%" height="100%" muted loop autoPlay playsInline style={{ objectFit: 'cover' }}>
-                                <source src={heartVideoLoop} type="video/mp4" />
-                            </video>
-                        </div>
+                        {/*<div id="video-container-1" style={{ width: '100%', height: '100%', display: activeVideo === 1 ? 'block' : 'none' }}>*/}
+                        {/*    <video ref={video1Ref} id="heart-video-1" width="100%" height="100%" muted autoPlay playsInline style={{ objectFit: 'cover' }}>*/}
+                        {/*        <source src={heartVideo} type="video/mp4" />*/}
+                        {/*    </video>*/}
+                        {/*</div>*/}
+                        {/*<div id="video-container-2" style={{ width: '100%', height: '100%', display: activeVideo === 2 ? 'block' : 'none', position: 'absolute', top: 0, left: 0 }}>*/}
+                        {/*    <video id="heart-video-2" width="100%" height="100%" muted loop autoPlay playsInline style={{ objectFit: 'cover' }}>*/}
+                        {/*        <source src={heartVideoLoop} type="video/mp4" />*/}
+                        {/*    </video>*/}
+                        {/*</div>*/}
                     </div>
 
                     {/* 右侧：实时心电图 - 更靠近心脏 */}

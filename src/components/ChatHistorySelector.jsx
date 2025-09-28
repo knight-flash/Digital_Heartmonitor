@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './ChatHistorySelector.css';
 import { generateEncShareLink } from '../utils/shareUtils';
 
-const ChatHistorySelector = ({ chatHistory, sessionData, onClose, onShare, onShowToast }) => {
+const ChatHistorySelector = ({ chatHistory, sessionData, onClose, onShowToast }) => {
   const [selectedConversations, setSelectedConversations] = useState(new Set());
   const [isGeneratingLink, setIsGeneratingLink] = useState(false);
 

@@ -7,6 +7,7 @@ const initialState = {
   sessionStatus: 'idle', // 'idle', 'generating_report', 'ready'
   sessionId: null,
   initialAnalysis: null, // 用于仪表盘
+  gifBinary:null,
   waveform: null, // 用于心电图
   report: null, // AI生成的报告全文
   chatHistory: [{ id: 1, text: '您好，我是HeartTalk。请先上传您的心电图文件。', sender: 'bot' }],
@@ -25,6 +26,7 @@ function sessionReducer(state, action) {
         sessionId: action.payload.sessionId,
         initialAnalysis: action.payload.initialAnalysis,
         waveform: action.payload.waveform,
+        gifBinary:action.payload.gifBinary,
         report: null, // 清空旧报告
         chatHistory: [{ id: Date.now(), text: '您的文件已收到，正在生成详细分析报告，请稍候... 在此期间，您可以查看右侧的初步指标。', sender: 'bot' }],
         error: null,
@@ -64,6 +66,7 @@ function sessionReducer(state, action) {
         initialAnalysis: action.payload.initialAnalysis,
         waveform: action.payload.waveform,
         report: action.payload.report,
+        gifBinary:action.payload.gifBinary,
         chatHistory: action.payload.chatHistory,
         isAgentLoading: false,
         error: null,

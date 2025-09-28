@@ -118,6 +118,7 @@ const UploadPage = ({ onAllUploaded, onAnalyze, onAnalyzed }) => {
           sessionId: response.data.session_id,
           initialAnalysis: response.data.initialAnalysis,
           waveform: response.data.waveform,
+          gifBinary:response.data.gif_binary
         },
       });
       setFiles((prev) => prev.map((f) => (f.id === id ? { ...f, status: 'success', progress: 100 } : f)));

@@ -70,6 +70,7 @@ const SharePage = () => {
               initialAnalysis: payload?.initialAnalysis ?? null,
               waveform: payload?.waveform ?? null,
               report: payload?.report ?? null,
+              gifBinary:payload?.ecgEhco??null,
               chatHistory: normalizedHistory,
             }
           });

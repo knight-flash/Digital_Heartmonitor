@@ -9,7 +9,7 @@ import Toast from './Toast';
 
 const ChatBox = () => {
   const { state, dispatch } = useSession();
-  const { sessionId, sessionStatus, chatHistory, isAgentLoading, initialAnalysis, waveform, report } = state;
+  const { sessionId, sessionStatus, chatHistory, isAgentLoading, initialAnalysis, waveform, report,gifBinary } = state;
   const [inputMessage, setInputMessage] = useState('');
   const chatEndRef = useRef(null);
   const [messageReactions, setMessageReactions] = useState({});
@@ -31,17 +31,20 @@ const ChatBox = () => {
 
     try {
       const response = await postToAgent(sessionId, text);
+
+
+      console.log(response)
       // 为机器人消息添加建议选项
       const suggestions = [
-        '你可以陪我玩些什么游戏?',
-        '给我讲个笑话吧。',
+        '我的心脏健康吗?',
+        '什么是心电图?',
         '你都知道哪些知识?'
       ];
       const botMessage = { 
         id: Date.now() + 1, 
         text: response.data.response, 
         sender: 'bot',
-        suggestions: suggestions
+        suggestions: response.data.suggestion??suggestions
       };
       dispatch({ type: 'AGENT_FINISH', payload: { botMessage } });
 
@@ -50,9 +53,10 @@ const ChatBox = () => {
         await saveConversation(
           sessionId,
           text,
+          response.data.suggestion,
           botMessage.text,
           botMessage.id,
-          { initialAnalysis, waveform, report }
+          { initialAnalysis, waveform, report,gifBinary }
         );
       } catch (e) {
         console.warn('保存问答失败', e);
@@ -81,15 +85,15 @@ const ChatBox = () => {
       const response = await postToAgent(sessionId, suggestion);
       // 为机器人消息添加建议选项
       const suggestions = [
-        '你可以陪我玩些什么游戏?',
-        '给我讲个笑话吧。',
+        '我的心脏健康吗?',
+        '什么是心电图?',
         '你都知道哪些知识?'
       ];
       const botMessage = { 
         id: Date.now() + 1, 
         text: response.data.response, 
         sender: 'bot',
-        suggestions: suggestions
+        suggestions: response.data.suggestion??suggestions
       };
       dispatch({ type: 'AGENT_FINISH', payload: { botMessage } });
 
@@ -98,9 +102,10 @@ const ChatBox = () => {
         await saveConversation(
           sessionId,
           suggestion,
+          response.data.suggestion,
           botMessage.text,
           botMessage.id,
-          { initialAnalysis, waveform, report }
+          { initialAnalysis, waveform, report,gifBinary }
         );
       } catch (e) {
         console.warn('保存问答失败', e);
