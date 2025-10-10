@@ -9,8 +9,8 @@ const PageTwo = () => {
 
     // 滚动进度相关 Hook（必须在任何 return 之前声明，避免条件调用）
     const contentRef = useRef(null);
-    const [scrollProgress, setScrollProgress] = useState(0);
-    const [isOverflow, setIsOverflow] = useState(false);
+    const [, setScrollProgress] = useState(0);
+    const [, setIsOverflow] = useState(false);
 
     // 定义一个专门的函数，根据状态返回需要渲染的具体内容
     const renderContent = () => {

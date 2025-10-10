@@ -34,8 +34,30 @@ const UploadPage = ({ onAllUploaded, onAnalyze, onAnalyzed }) => {
   const [files, setFiles] = useState([]);
   const [samplesLocked, setSamplesLocked] = useState(false);
 
-  const onBrowse = () => inputRef.current?.click();
 
+  const startUpload = useCallback(async (file, id) => {
+    // 标记开始
+    setFiles((prev) => prev.map((f) => (f.id === id ? { ...f, status: 'uploading', progress: 0, error: '' } : f)));
+
+    try {
+      const response = await analyzeFile(file);
+      dispatch({
+        type: 'START_SESSION',
+        payload: {
+          sessionId: response.data.session_id,
+          initialAnalysis: response.data.initialAnalysis,
+          waveform: response.data.waveform,
+          gifBinary: response.data.gif_binary
+        },
+      });
+      setFiles((prev) => prev.map((f) => (f.id === id ? { ...f, status: 'success', progress: 100 } : f)));
+      // 每次成功上传后，立即通知父组件跳转
+      if (onAllUploaded) onAllUploaded();
+    } catch (error) {
+      const errorMessage = error?.response?.data?.error || error?.message || '未知错误';
+      setFiles((prev) => prev.map((f) => (f.id === id ? { ...f, status: 'error', error: errorMessage } : f)));
+    }
+  }, [dispatch, onAllUploaded]); 
   const handleFiles = useCallback((fileList) => {
     const arr = Array.from(fileList);
     const validated = arr.map((file) => {
@@ -67,7 +89,7 @@ const UploadPage = ({ onAllUploaded, onAnalyze, onAnalyzed }) => {
     });
     // 自动开始上传有效文件（直接传入 File，避免 setState 异步导致找不到）
     validated.filter(v => v.status === 'pending').forEach(v => startUpload(v.file, v.id));
-  }, []);
+  }, [startUpload]);
 
   const onInputChange = (e) => {
     if (e.target.files?.length) handleFiles(e.target.files);
@@ -106,29 +128,7 @@ const UploadPage = ({ onAllUploaded, onAnalyze, onAnalyzed }) => {
     }
   };
 
-  const startUpload = async (file, id) => {
-    // 标记开始
-    setFiles((prev) => prev.map((f) => (f.id === id ? { ...f, status: 'uploading', progress: 0, error: '' } : f)));
 
-    try {
-      const response = await analyzeFile(file);
-      dispatch({
-        type: 'START_SESSION',
-        payload: {
-          sessionId: response.data.session_id,
-          initialAnalysis: response.data.initialAnalysis,
-          waveform: response.data.waveform,
-          gifBinary:response.data.gif_binary
-        },
-      });
-      setFiles((prev) => prev.map((f) => (f.id === id ? { ...f, status: 'success', progress: 100 } : f)));
-      // 每次成功上传后，立即通知父组件跳转
-      if (onAllUploaded) onAllUploaded();
-    } catch (error) {
-      const errorMessage = error?.response?.data?.error || error?.message || '未知错误';
-      setFiles((prev) => prev.map((f) => (f.id === id ? { ...f, status: 'error', error: errorMessage } : f)));
-    }
-  };
 
   // 全部上传完成后通知父组件（至少一个成功，且无 pending/uploading）
   const notifiedRef = useRef(false);

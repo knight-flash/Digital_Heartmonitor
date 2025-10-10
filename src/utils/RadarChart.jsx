@@ -22,9 +22,6 @@ function RadarChart({ data }) {
       return '#58D68D'; // 绿色 - 正常值
     };
 
-    const colors = data.map(item => 
-      getColorByValue(item.value, item.min, item.max, item.low, item.high)
-    );
 
     return {
       grid: {
@@ -48,7 +45,7 @@ function RadarChart({ data }) {
           formatter: function(value, indicator) {
             const index = indicators.findIndex(item => item.name === value);
             const item = data[index];
-            const color = getColorByValue(item.value, item.min, item.max, item.low, item.high);
+
             // 根据是否有单位来决定显示格式
             const scoreText = item.unit ? `${item.value} (${item.unit})` : `${item.value}`;
             return [

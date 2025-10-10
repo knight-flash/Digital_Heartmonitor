@@ -14,7 +14,7 @@ const SharePage = () => {
   const { state, dispatch } = useSession();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [shareData, setShareData] = useState(null);
+  const [setShareData] = useState(null);
   const [activePage, setActivePage] = useState('page1');
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const SharePage = () => {
             if (!Array.isArray(rawList)) return [];
             const normalized = [];
             rawList.forEach((item) => {
-              // 后端示例中：item.sender 实际是“问题文本”，item.text 是“回答文本”
+              // 后端示例中：item.sender 实际是"问题文本"，item.text 是"回答文本"
               const questionText = item?.sender ?? '';
               const answerText = item?.text ?? '';
               const userMsgId = item?.parentUserMessageId || `${item?.id}_q`;
@@ -115,7 +115,7 @@ const SharePage = () => {
     };
 
     loadShareData();
-  }, [dispatch]);
+  }, [dispatch, setShareData]);
 
   const handlePageChange = (page) => {
     setActivePage(page);

@@ -4,7 +4,7 @@ import SharePage from './components/SharePage';
 import './App.css';
 import { useSession } from "./utils/SessionContext";
 import {getSessionStatus} from "./services/apiService";
-import { getShareIdFromUrl } from "./utils/shareUtils";
+
 
 function App() {
     const { state, dispatch } = useSession();
