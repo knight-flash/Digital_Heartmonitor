@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-// 1. 创建一个axios实例，集中配置后端API的基础URL
+// 1. 创建一个axios实例，集中配置后端API的基础UR
 const apiClient = axios.create({
   baseURL: 'https://digitalheart.heartvoice.com.cn', // 从环境变量读取后端地址
   //  baseURL: 'http://localhost:5001', // 从环境变量读取后端地址
