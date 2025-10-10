@@ -17,6 +17,11 @@ const initialState = {
 
 // 2. 创建一个Reducer函数，定义所有可能的状态修改操作
 function sessionReducer(state, action) {
+  const suggestions = [
+    '我的心脏健康吗?',
+    '什么是心电图?',
+    '你都知道哪些知识?'
+  ];
   switch (action.type) {
     case 'START_SESSION':
       // 当文件上传成功，开始一个新会话
@@ -37,7 +42,7 @@ function sessionReducer(state, action) {
         ...state,
         sessionStatus: 'ready',
         report: action.payload.report,
-        chatHistory: [...state.chatHistory, { id: Date.now(), text: '您的专属AI报告已生成完毕！您可以开始向我提问了。', sender: 'bot' }]
+        chatHistory: [...state.chatHistory, { id: Date.now(), text: '您的专属AI报告已生成完毕！您可以开始向我提问了。', sender: 'bot', suggestions: suggestions}]
       };
     case 'AGENT_START':
       // AI开始回复
