@@ -9,13 +9,8 @@ const PageOne = () => {
     const { state } = useSession();
     const { sessionStatus, waveform, initialAnalysis,gifBinary } = state;
     const [activeVideo, setActiveVideo] = useState(1);
-    const [containerHeight, setContainerHeight] = useState(0);
-    const [isCalculating, setIsCalculating] = useState(false);
-    const [isInitialized, setIsInitialized] = useState(false);
+    const [, setImageLoaded] = useState(false);
     const video1Ref = useRef(null);
-    const containerRef = useRef(null);
-    const calculationTimeoutRef = useRef(null);
-    const lastCalculatedHeight = useRef(0);
 
     useEffect(() => {
         if (sessionStatus === 'generating_report' || sessionStatus === 'ready') {
@@ -35,98 +30,6 @@ const PageOne = () => {
             };
         }
     }, [sessionStatus]);
-
-    // 优化的高度计算逻辑 - 防抖和智能更新
-    useEffect(() => {
-        const calculateHeight = () => {
-            if (!containerRef.current || isCalculating) return;
-            
-            setIsCalculating(true);
-            
-            // 使用requestAnimationFrame确保在下一帧计算
-            requestAnimationFrame(() => {
-                if (containerRef.current) {
-                    const rect = containerRef.current.getBoundingClientRect();
-                    const parentHeight = rect.height;
-                    
-                    // 只有当高度真正变化时才更新状态
-                    if (parentHeight > 0) {
-                        const availableHeight = parentHeight - 40; // 20px padding * 2
-                        const cardHeight = Math.max(availableHeight / 2, 200); // 最小高度200px
-                        
-                        // 直接更新高度，确保立即显示
-                        lastCalculatedHeight.current = cardHeight;
-                        setContainerHeight(cardHeight);
-                        
-                        // 标记为已初始化，避免后续的闪烁
-                        if (!isInitialized) {
-                            setIsInitialized(true);
-                        }
-                    }
-                }
-                setIsCalculating(false);
-            });
-        };
-
-        // 防抖函数
-        const debouncedCalculateHeight = () => {
-            if (calculationTimeoutRef.current) {
-                clearTimeout(calculationTimeoutRef.current);
-            }
-            calculationTimeoutRef.current = setTimeout(calculateHeight, 50);
-        };
-
-        // 初始计算 - 只计算一次
-        const initialCalculate = () => {
-            if (containerRef.current) {
-                calculateHeight();
-            } else {
-                // 如果容器还没准备好，延迟计算
-                setTimeout(() => {
-                    if (containerRef.current) {
-                        calculateHeight();
-                    }
-                }, 100);
-            }
-        };
-
-        // 立即初始计算，确保DOM完全渲染
-        setTimeout(initialCalculate, 0);
-
-        // 监听窗口大小变化 - 使用防抖
-        const handleResize = debouncedCalculateHeight;
-        window.addEventListener('resize', handleResize);
-
-        // 简化MutationObserver - 只在必要时触发
-        const observer = new MutationObserver(() => {
-            debouncedCalculateHeight();
-        });
-
-        if (containerRef.current) {
-            observer.observe(containerRef.current, {
-                attributes: true,
-                attributeFilter: ['style']
-            });
-        }
-
-        // 监听页面可见性变化
-        const handleVisibilityChange = () => {
-            if (!document.hidden) {
-                debouncedCalculateHeight();
-            }
-        };
-
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            observer.disconnect();
-            if (calculationTimeoutRef.current) {
-                clearTimeout(calculationTimeoutRef.current);
-            }
-        };
-    }, [isCalculating]);
 
     // 准备心率数据（圆环进度条）
     const heartRateData = initialAnalysis ? {
@@ -149,7 +52,7 @@ const PageOne = () => {
     ] : [];
     return (
         <div className="center_main" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <div ref={containerRef} className="center_top" style={{
+            <div className="center_top" style={{
                 width: '100%',
                 height: '100%',
                 display: 'flex',
@@ -161,8 +64,8 @@ const PageOne = () => {
                 {/* 上半部分：心脏视频和心电图 - 向上移动并缩小宽度 */}
                 <div style={{
                     width: '85%',
-                    height: isInitialized && containerHeight > 0 ? `${containerHeight}px` : '300px',
-                    minHeight: '200px',
+                    flex: 1,
+                    minHeight: '300px', // 确保最小高度
                     backgroundColor: '#f9fafb',
                     borderRadius: '10px',
                     padding: '15px',
@@ -170,10 +73,10 @@ const PageOne = () => {
                     marginLeft: 'auto',
                     marginRight: 'auto',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'stretch', // 改为 stretch 确保子元素填满高度
                     justifyContent: 'space-between',
                     border: '1px solid #e5e7eb',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)'
                 }}>
                     {/* 左侧：心脏视频 */}
                     <div style={{
@@ -182,13 +85,35 @@ const PageOne = () => {
                         position: 'relative',
                         overflow: 'hidden',
                         borderRadius: '8px',
-                        backgroundColor: '#1a2f3d'
+                        backgroundColor: '#1a2f3d',
+                        minHeight: '200px' // 确保最小高度
                     }}>
-                        <div id="video-container-1" style={{ width: '100%', height: '100%', display: activeVideo === 1 ? 'block' : 'none' }}>
+                        <div id="video-container-1" style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                            display: activeVideo === 1 ? 'block' : 'none',
+                            position: 'relative'
+                        }}>
                             <img
                                 src={`data:image/gif;base64,${gifBinary}`}
                                 alt="ECG 动图"
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                style={{ 
+                                    width: '100%', 
+                                    height: '100%', 
+                                    objectFit: 'cover',
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0
+                                }}
+                                onLoad={(e) => {
+                                    // 确保图片加载后不会影响布局
+                                    e.target.style.position = 'absolute';
+                                    setImageLoaded(true);
+                                }}
+                                onError={() => {
+                                    console.error('GIF 图片加载失败');
+                                    setImageLoaded(false);
+                                }}
                             />
                         </div>
                         {/*<div id="video-container-1" style={{ width: '100%', height: '100%', display: activeVideo === 1 ? 'block' : 'none' }}>*/}
@@ -229,8 +154,8 @@ const PageOne = () => {
                 {/* 下半部分：核心心电指标 - 分成两部分 */}
                 <div style={{
                     width: '85%',
-                    height: isInitialized && containerHeight > 0 ? `${containerHeight}px` : '300px',
-                    minHeight: '200px',
+                    flex: 1,
+                    minHeight: '250px', // 确保最小高度
                     backgroundColor: '#f9fafb',
                     borderRadius: '10px',
                     padding: '15px',
@@ -238,11 +163,11 @@ const PageOne = () => {
                     marginLeft: 'auto',
                     marginRight: 'auto',
                     display: 'flex',
-                    alignItems: 'center',
+                    alignItems: 'stretch', // 改为 stretch 确保子元素填满高度
                     justifyContent: 'space-between',
                     gap: '0px',
                     border: '1px solid #e5e7eb',
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)'
                 }}>
                     {/* 左侧：心率圆环进度条 */}
                     <div style={{

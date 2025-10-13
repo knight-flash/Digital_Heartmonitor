@@ -42,7 +42,7 @@ function RadarChart({ data }) {
           fontWeight: 'bold',
           padding: [3, 5],
           overflow: 'break',
-          formatter: function(value, indicator) {
+          formatter: function(value) {
             const index = indicators.findIndex(item => item.name === value);
             const item = data[index];
 
