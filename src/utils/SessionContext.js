@@ -18,7 +18,7 @@ const initialState = {
 // 2. 创建一个Reducer函数，定义所有可能的状态修改操作
 function sessionReducer(state, action) {
   const suggestions = [
-    '我的心脏健康吗?',
+    '我的心脏年龄是多少?',
     '什么是心电图?',
     '你都知道哪些知识?'
   ];
