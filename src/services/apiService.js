@@ -10,8 +10,8 @@ const apiClient = axios.create({
 });
 
 const apiClientPlus = axios.create({
-  // baseURL: 'http://localhost:8086', // 从环境变量读取后端地址
-  baseURL: 'https://digitalheart.heartvoice.com.cn:8080', // 从环境变量读取后端地址
+  // baseURL: 'http://localhost:5842', // 从环境变量读取后端地址
+  baseURL: 'https://www.heartvoice.com.cn/sfpdf', // 从环境变量读取后端地址
   // timeout: 60000, // 设置请求超时时间（例如60秒）
 });
 
@@ -74,7 +74,7 @@ export const saveConversation = (sessionId, question,suggestions, answer, messag
     ecgEhco: rightPanelData.gifBinary ?? undefined,
   };
   // 请根据后端实际路径调整此接口地址
-  return apiClientPlus.post('/api/digitalHeart/saveMessage', payload);
+  return apiClientPlus.post('/digitalHeart/saveMessage', payload);
 };
 
 /**
@@ -83,7 +83,7 @@ export const saveConversation = (sessionId, question,suggestions, answer, messag
  * @param {Array<string|number>} messageIds
  */
 export const fetchSharedData = (sessionId, messageIds) => {
-  return apiClientPlus.post('/api/digitalHeart/getMessage', {
+  return apiClientPlus.post('/digitalHeart/getMessage', {
     sessionId,
     messageIds,
   });
@@ -97,5 +97,5 @@ export const fetchSharedData = (sessionId, messageIds) => {
  */
 export const saveReaction = (sessionId, messageId, reaction) => {
   const payload = { sessionId, messageId, reaction };
-  return apiClientPlus.post('/api/digitalHeart/saveReaction', payload);
+  return apiClientPlus.post('/digitalHeart/saveReaction', payload);
 };
