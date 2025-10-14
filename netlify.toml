@@ -1,0 +1,18 @@
+# 构建配置（根据项目类型调整）
+[build]
+  publish = "build"  # React项目默认构建目录为build
+  command = "npm run build"  # 构建命令
+
+# 单页应用路由支持（对应Nginx的try_files $uri $uri/ /index.html;）
+[[redirects]]
+  from = "/*"         # 匹配所有路径
+  to = "/index.html"  # 指向index.html处理路由
+  status = 200        # 前端路由重写（不改变URL）
+
+# 缓存策略（对应Nginx的add_header配置）
+[[headers]]
+  for = "/*"          # 应用于所有文件
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"  # 禁止缓存
+    Pragma = "no-cache"
+    Expires = "0"
