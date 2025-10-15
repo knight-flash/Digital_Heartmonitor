@@ -65,8 +65,8 @@ export const postToAgent = (sessionId, prompt) => {
  * @param {string} sessionId - 会话ID
  * @param {string} question - 用户问题
  * @param {string} suggestions - 建议
- * @param {string} messageId - 机器人回答
- * @param {string} rightPanelData - 机器人回答
+ * @param {string} messageId - 消息的id
+ * @param {string} rightPanelData - 右边pageOne的数据
  * @param {string} answer - 机器人回答
  * @returns {Promise<Object>} - 后端保存结果
  */
