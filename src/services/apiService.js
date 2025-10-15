@@ -9,17 +9,17 @@ const apiClient = axios.create({
   timeout: 600000, // 设置请求超时时间（例如60秒）
 });
 
-// const apiClientPlus = axios.create({
-//   // baseURL: 'http://localhost:5842', // 从环境变量读取后端地址
-//   baseURL: 'https://www.heartvoice.com.cn/sfpdf', // 从环境变量读取后端地址
-//   // timeout: 60000, // 设置请求超时时间（例如60秒）
-// });
-
 const apiClientPlus = axios.create({
-  baseURL: '', // 相对路径，与代理的 /sfpdf 匹配
-  timeout: 60000,
-  withCredentials: true // 若需要携带凭证
+  // baseURL: 'http://localhost:5842', // 从环境变量读取后端地址
+  baseURL: 'https://digitalheart.heartvoice.com.cn:8080', // 从环境变量读取后端地址
+  // timeout: 60000, // 设置请求超时时间（例如60秒）
 });
+
+// const apiClientPlus = axios.create({
+//   baseURL: '', // 相对路径，与代理的 /sfpdf 匹配
+//   timeout: 60000,
+//   withCredentials: true // 若需要携带凭证
+// });
 
 
 /**
@@ -84,7 +84,7 @@ export const saveConversation = (sessionId, question,suggestions, answer, messag
     ecgEhco: rightPanelData.gifBinary ?? undefined,
   };
   // 请根据后端实际路径调整此接口地址
-  return apiClientPlus.post('/sfpdf/digitalHeart/saveMessage', payload);
+  return apiClientPlus.post('/api/digitalHeart/saveMessage', payload);
 };
 
 /**
@@ -93,7 +93,7 @@ export const saveConversation = (sessionId, question,suggestions, answer, messag
  * @param {Array<string|number>} messageIds
  */
 export const fetchSharedData = (sessionId, messageIds) => {
-  return apiClientPlus.post('/sfpdf/digitalHeart/getMessage', {
+  return apiClientPlus.post('/api/digitalHeart/getMessage', {
     sessionId,
     messageIds,
   });
@@ -107,5 +107,5 @@ export const fetchSharedData = (sessionId, messageIds) => {
  */
 export const saveReaction = (sessionId, messageId, reaction) => {
   const payload = { sessionId, messageId, reaction };
-  return apiClientPlus.post('/sfpdf/digitalHeart/saveReaction', payload);
+  return apiClientPlus.post('/api/digitalHeart/saveReaction', payload);
 };
