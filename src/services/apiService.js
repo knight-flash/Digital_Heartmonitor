@@ -16,7 +16,7 @@ const apiClient = axios.create({
 // });
 
 const apiClientPlus = axios.create({
-  baseURL: '/sfpdf', // 相对路径，与代理的 /sfpdf 匹配
+  baseURL: '', // 相对路径，与代理的 /sfpdf 匹配
   timeout: 60000,
   withCredentials: true // 若需要携带凭证
 });
@@ -84,7 +84,7 @@ export const saveConversation = (sessionId, question,suggestions, answer, messag
     ecgEhco: rightPanelData.gifBinary ?? undefined,
   };
   // 请根据后端实际路径调整此接口地址
-  return apiClientPlus.post('/digitalHeart/saveMessage', payload);
+  return apiClientPlus.post('/sfpdf/digitalHeart/saveMessage', payload);
 };
 
 /**
@@ -93,7 +93,7 @@ export const saveConversation = (sessionId, question,suggestions, answer, messag
  * @param {Array<string|number>} messageIds
  */
 export const fetchSharedData = (sessionId, messageIds) => {
-  return apiClientPlus.post('/digitalHeart/getMessage', {
+  return apiClientPlus.post('/sfpdf/digitalHeart/getMessage', {
     sessionId,
     messageIds,
   });
@@ -107,5 +107,5 @@ export const fetchSharedData = (sessionId, messageIds) => {
  */
 export const saveReaction = (sessionId, messageId, reaction) => {
   const payload = { sessionId, messageId, reaction };
-  return apiClientPlus.post('/digitalHeart/saveReaction', payload);
+  return apiClientPlus.post('/sfpdf/digitalHeart/saveReaction', payload);
 };

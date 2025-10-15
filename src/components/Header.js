@@ -36,7 +36,7 @@ const Header = () => {
         <div className="header-left">
           <div className="logo">
             <span className="logo-icon">💬</span>
-            <span className="logo-text">数字心脏监测系统3</span>
+            <span className="logo-text">数字心脏监测系统4</span>
           </div>
         </div>
         
@@ -50,7 +50,7 @@ const Header = () => {
             <div className="institution-line">北京大学健康医疗大数据国家研究院</div>
           </div>
         </div>
-      </div>S
+      </div>
     </header>
   );
 };
