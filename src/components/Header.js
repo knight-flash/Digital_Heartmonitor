@@ -36,7 +36,7 @@ const Header = () => {
         <div className="header-left">
           <div className="logo">
             <span className="logo-icon">💬</span>
-            <span className="logo-text">数字心脏监测系统</span>
+            <span className="logo-text">数字心脏监测系统1</span>
           </div>
         </div>
         
