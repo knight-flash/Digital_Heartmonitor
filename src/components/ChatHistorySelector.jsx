@@ -6,6 +6,27 @@ const ChatHistorySelector = ({ chatHistory, sessionData, onClose, onShowToast })
   const [selectedConversations, setSelectedConversations] = useState(new Set());
   const [isGeneratingLink, setIsGeneratingLink] = useState(false);
 
+  // 检测是否为错误消息
+  const isErrorMessage = (text) => {
+    if (!text) return false;
+    
+    const errorPatterns = [
+      /请求出错/i,
+      /Network Error/i,
+      /网络错误/i,
+      /连接失败/i,
+      /请求失败/i,
+      /服务器错误/i,
+      /服务异常/i,
+      /timeout/i,
+      /超时/i,
+      /error/i,
+      /失败/i
+    ];
+    
+    return errorPatterns.some(pattern => pattern.test(text));
+  };
+
   // 将聊天记录按对话分组（用户消息+对应的机器人回复）
   const groupConversations = () => {
     const conversations = [];
@@ -26,15 +47,17 @@ const ChatHistorySelector = ({ chatHistory, sessionData, onClose, onShowToast })
         }
       }
       
-      // 创建对话对象
-      const conversation = {
-        id: `conv_${userMsg.id}`,
-        userMessage: userMsg,
-        botMessage: botMessage,
-        index: index
-      };
-      
-      conversations.push(conversation);
+      // 只创建有成功机器人回复的对话对象，过滤掉错误消息
+      if (botMessage && !isErrorMessage(botMessage.text)) {
+        const conversation = {
+          id: `conv_${userMsg.id}`,
+          userMessage: userMsg,
+          botMessage: botMessage,
+          index: index
+        };
+        
+        conversations.push(conversation);
+      }
     });
 
     return conversations;
