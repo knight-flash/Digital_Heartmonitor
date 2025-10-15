@@ -64,6 +64,9 @@ export const postToAgent = (sessionId, prompt) => {
  * @description 保存一次问答记录到后端
  * @param {string} sessionId - 会话ID
  * @param {string} question - 用户问题
+ * @param {string} suggestions - 建议
+ * @param {string} messageId - 机器人回答
+ * @param {string} rightPanelData - 机器人回答
  * @param {string} answer - 机器人回答
  * @returns {Promise<Object>} - 后端保存结果
  */
