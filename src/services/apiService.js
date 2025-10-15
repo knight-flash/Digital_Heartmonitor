@@ -11,7 +11,7 @@ const apiClient = axios.create({
 
 const apiClientPlus = axios.create({
   // baseURL: 'http://localhost:5842', // 从环境变量读取后端地址
-  baseURL: 'https://digitalheart.heartvoice.com.cn:8080', // 从环境变量读取后端地址
+  baseURL: 'https://digitalheart.heartvoice.com.cn/ss', // 从环境变量读取后端地址
   // timeout: 60000, // 设置请求超时时间（例如60秒）
 });
 
