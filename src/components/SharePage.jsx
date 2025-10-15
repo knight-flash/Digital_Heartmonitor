@@ -14,7 +14,7 @@ const SharePage = () => {
   const { state, dispatch } = useSession();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [setShareData] = useState(null);
+  const [,setShareData] = useState(null);
   const [activePage, setActivePage] = useState('page1');
 
   useEffect(() => {
