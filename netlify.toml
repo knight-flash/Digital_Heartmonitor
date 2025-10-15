@@ -16,3 +16,18 @@
     Cache-Control = "no-cache, no-store, must-revalidate"  # 禁止缓存
     Pragma = "no-cache"
     Expires = "0"
+
+[[headers]]
+  # 匹配所有API请求路径（根据实际接口路径调整）
+  for = "/sfpdf/*"
+  [headers.values]
+    # 允许的请求来源（替换为实际需要访问的前端域名）
+    Access-Control-Allow-Origin = "https://www.heartvoice.com.cn"
+    # 允许的请求方法
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    # 允许的请求头
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    # 允许携带凭证（如Cookie/Token）
+    Access-Control-Allow-Credentials = "true"
+    # 预检请求缓存时间（秒）
+    Access-Control-Max-Age = "3600"
