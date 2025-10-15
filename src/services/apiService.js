@@ -9,11 +9,18 @@ const apiClient = axios.create({
   timeout: 600000, // 设置请求超时时间（例如60秒）
 });
 
+// const apiClientPlus = axios.create({
+//   // baseURL: 'http://localhost:5842', // 从环境变量读取后端地址
+//   baseURL: 'https://www.heartvoice.com.cn/sfpdf', // 从环境变量读取后端地址
+//   // timeout: 60000, // 设置请求超时时间（例如60秒）
+// });
+
 const apiClientPlus = axios.create({
-  // baseURL: 'http://localhost:5842', // 从环境变量读取后端地址
-  baseURL: 'https://www.heartvoice.com.cn/sfpdf', // 从环境变量读取后端地址
-  // timeout: 60000, // 设置请求超时时间（例如60秒）
+  baseURL: '/sfpdf', // 相对路径，与代理的 /sfpdf 匹配
+  timeout: 60000,
+  withCredentials: true // 若需要携带凭证
 });
+
 
 /**
  * @description 上传.mat文件并发起分析，对应新的 /analyze 接口
