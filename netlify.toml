@@ -18,9 +18,7 @@
     Expires = "0"
 
 # 接口代理规则
-[[
-redirects
-]]
+[[redirects]]
   from = "/sfpdf/*"  # 匹配所有 /sfpdf 开头的请求（和本地 setupProxy.js 的 /sfpdf 对应）
   to = "https://www.heartvoice.com.cn/sfpdf/:splat"  # 代理到目标域名，:splat 继承路径后缀
   status = 200       # 保持200状态码（前端无感知转发）
@@ -28,13 +26,9 @@ redirects
   headers = { "X-Forwarded-Proto" = "https" }  # 可选：确保后端识别 HTTPS 协议
 
 # 跨域配置（已有，保留，确保请求带跨域头）
-[[
-headers
-]]
+[[headers]]
   for = "/sfpdf/*"
-  [
-headers.values
-]
+  [headers.values]
     Access-Control-Allow-Origin = "https://www.heartvoice.com.cn"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
