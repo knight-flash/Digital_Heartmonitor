@@ -19,8 +19,8 @@
 
 # 接口代理规则
 [[redirects]]
-  from = "/sfpdf/digitalHeart/saveMessage"
-  to = "https://www.heartvoice.com.cn/sfpdf/digitalHeart/saveMessage"
+  from = "/sfpdf/*"  # 匹配所有 /sfpdf 开头的请求（和本地 setupProxy.js 的 /sfpdf 对应）
+  to = "https://www.heartvoice.com.cn/sfpdf/:splat"  # 代理到目标域名，:splat 继承路径后缀
   status = 200       # 保持200状态码（前端无感知转发）
   force = true       # 强制转发，忽略 Netlify 静态资源匹配
   headers = { "X-Forwarded-Proto" = "https" }  # 可选：确保后端识别 HTTPS 协议
